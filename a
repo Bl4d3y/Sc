@@ -4,49 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voided Games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+        /* Resetting default margin and padding */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0a0a0a; /* Dark background */
+            color: #fff; /* Light text color */
+            line-height: 1.6;
+            margin: 0;
+            overflow-x: hidden; /* Hide horizontal overflow */
         }
 
         header {
-            background-color: #333;
+            background-color: #1e1e1e; /* Dark background for header */
             color: #fff;
-            padding: 10px 20px; /* Adjusting padding to make the header smaller */
+            padding: 20px; /* Increased padding for header */
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow */
+        }
+
+        h1 {
+            font-size: 2rem;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px; /* Increased max-width for content */
             margin: 0 auto;
             padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            justify-items: center; /* Center items horizontally */
+            align-items: center; /* Center items vertically */
         }
 
         .game-button {
-            margin: 10px;
             position: relative;
             overflow: hidden;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease;
+            background-color: #333; /* Dark background */
+            border: none; /* Remove outline */
         }
 
         .game-button img {
             max-width: 100%;
             max-height: 200px; /* Set a maximum height for the images */
             display: block;
+            transition: transform 0.3s ease; /* Smooth image scaling */
         }
 
-        .game-button:hover {
-            transform: translateY(-5px);
+        .game-button:hover img {
+            transform: scale(1.1); /* Scale up image on hover */
         }
 
         .game-name {
@@ -54,11 +74,11 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             color: #fff;
             padding: 8px;
             text-align: center;
-            transition: 0.3s;
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition for visibility and position */
             opacity: 0;
             transform: translateY(100%);
         }
@@ -70,28 +90,33 @@
 
         .settings-button {
             padding: 10px 20px;
-            background-color: #333;
+            background-color: #1e1e1e; /* Dark background color */
             color: #fff;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
         }
 
         .settings-button:hover {
-            background-color: #555;
+            background-color: #333;
         }
 
-        /* Settings menu */
+        .settings-icon {
+            margin-right: 5px;
+        }
+
         .settings-menu {
             position: fixed;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            right: 20px;
+            transform: translateY(-50%);
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
             padding: 20px;
             display: none;
             z-index: 999;
@@ -106,10 +131,11 @@
         .settings-menu ul li {
             padding: 8px 0;
             cursor: pointer;
+            font-size: 1.1rem;
         }
 
         .settings-menu ul li:hover {
-            background-color: #f0f0f0;
+            background-color: #333;
         }
 
         .close-button {
@@ -117,12 +143,9 @@
             top: 10px;
             right: 10px;
             cursor: pointer;
-            color: #999;
+            color: #fff;
+            font-size: 1.5rem;
             z-index: 1001;
-        }
-
-        .close-button:hover {
-            color: #666;
         }
 
         .fullscreen-iframe {
@@ -134,25 +157,37 @@
             border: none;
             z-index: 1000;
         }
-
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
     <header>
         <h1>Voided Games</h1>
-        <button class="settings-button" onclick="toggleSettingsMenu()">Settings</button>
+        <button class="settings-button" onclick="toggleSettingsMenu()"><i class="fas fa-cog"></i> Settings</button>
     </header>
 
+    <div class="container" id="customGameContainer">
+    </div>
+
     <div class="settings-menu" id="settingsMenu">
-        <span class="close-button" onclick="toggleSettingsMenu()">Close</span>
+        <span class="close-button" onclick="toggleSettingsMenu()">&times;</span>
         <ul>
             <li onclick="changeFavicon()">Change Favicon</li>
             <li onclick="changeTitle()">Change Title</li>
+<li onclick="changeBackgroundColor()">Change Background Color</li>
+<li onclick="changeTextColor()">Change Text Color</li>
+<li onclick="changeFont()">Change Font</li>
+<li onclick="toggleDarkMode()">Toggle Dark Mode</li>
+<li onclick="adjustFontSize()">Adjust Font Size</li>
+<li onclick="addCustomGame()">Add Custom Game</li>
+<li onclick="bookmarkGame()">Bookmark Game</li>
+<li onclick="rateGame()">Rate Game</li>
+<li onclick="resetSettings()">Reset Settings</li>
+
+
         </ul>
     </div>
+
+
 
     <div class="container" id="gameContainer">
         <div class="game-button">
@@ -197,7 +232,40 @@
                 <div class="game-name">Cookie Clicker</div>
             </a>
         </div>
+        <div class="game-button">
+            <a href="Cooking Fevor" onclick="embedWebsite('https://images-opensocial.googleusercontent.com/gadgets/ifr?url=https://274107258-163827704631694683.preview.editmysite.com/uploads/b/139890129-208437380278355784/files/cf.xml&container=ig'); return false;">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTErKDbCWjLM2swoCt1_lPgabV2hWkHs0iq17UCbHZjcA&s" alt="Game 4">
+                <div class="game-name">Cooking Fevor</div>
+            </a>
+        </div>
+        <div class="game-button">
+            <a href="Moto X3M Winter" onclick="embedWebsite('https://images-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/bobydob/JSEngine@ef23f79324c37921a9e7e53dadd30c9721235820/build/m3mw/m3mw.xml&container=ig'); return false;">
+                <img src="https://img.poki.com/cdn-cgi/image/quality=78,width=600,height=600,fit=cover,f=auto/c28eee5a5924e8a70afb2c1490d9b571.jpeg" alt="Game 4">
+                <div class="game-name">Moto X3M Winter</div>
+            </a>
+        </div>
+        <div class="game-button">
+            <a href="Angry Birds" onclick="embedWebsite('https://images-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/gertdoro/UnityExplorer@30e7601c53b57634d2288fd993d8baaeae060eb2/CSConsole/Lexers/ab.xml&container=ig'); return false;">
+                <img src="https://static.wikia.nocookie.net/angrybirds/images/7/74/Mzl.wepjpyjw.png/revision/latest/scale-to-width-down/250?cb=20210823103805" alt="Game 4">
+                <div class="game-name">Angry Birds</div>
+            </a>
+        </div>
+        <div class="game-button">
+            <a href="Bitlife" onclick="embedWebsite('https://gg-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/sk1bx/ReactCasts@0be0dfa9e60cbe5233bcc486ed7ecaeff7cedab0/thumbnail/blf.xml&container=ig'); return false;">
+                <img src="https://d.newsweek.com/en/full/1317374/bitlife-ribbons-how-get-all-complete-list-android-ios-cheats-guide-tips-become.jpg?w=1600&h=1600&q=88&f=75befc746fb83a0c568c44ca07bc5e64" alt="Game 4">
+                <div class="game-name">Bitlife</div>
+            </a>
+        </div>
+        <div class="game-button">
+            <a href="Bitlife" onclick="embedWebsite('https://script.google.com/macros/s/AKfycbxVL31uiSnwukjx25tPFw7nJVDPCQLkVnlCpjWrs4l5BSYNHKm2cmu5qzhslvR2ELUc/exec'); return false;">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRunA2yLy6JA5SmR5FgFIFSIvzA5LLDoLFgoud2lA7PCQ&s" alt="Game 4">
+                <div class="game-name">Arcade Drift</div>
+            </a>
+        </div>
     </div>
+    <p>Roblox: https://universityequality.com/#youtube.com-youtubei/v1/search</p>
+
+    
 
     <script>
         function toggleSettingsMenu() {
@@ -241,6 +309,120 @@
                 document.title = newTitle;
             }
         }
+
+        function addCustomGame() {
+    var gameName = prompt("Enter the name of the custom game:");
+    var gameURL = prompt("Enter the URL of the custom game:");
+    
+    // You would typically send this data to the backend to save it to a database
+    if (gameName && gameURL) {
+        alert("Custom game added successfully!");
+    } else {
+        alert("Please provide both a name and a URL for the custom game.");
+    }
+}
+
+function bookmarkGame() {
+    // You would typically have a variable to store the current game URL
+    var currentGameURL = window.location.href;
+
+    // Here, you might want to check if the game is already bookmarked by the user
+    // For demonstration purposes, let's assume the game is not bookmarked initially
+    var isBookmarked = false;
+
+    // If the game is already bookmarked, you might want to provide an option to remove the bookmark
+    // For now, we'll just toggle the bookmark status
+    if (isBookmarked) {
+        var confirmation = confirm("This game is already bookmarked. Do you want to remove it from bookmarks?");
+        if (confirmation) {
+            isBookmarked = false;
+            alert("Game removed from bookmarks!");
+        } else {
+            alert("Bookmark action cancelled.");
+        }
+    } else {
+        var confirmation = confirm("Are you sure you want to bookmark this game?");
+        if (confirmation) {
+            // Here you might want to send the game URL to the backend to store it in the user's bookmarks
+            // For now, we'll just simulate storing the bookmark locally
+            // You can replace this with your backend logic
+            localStorage.setItem('bookmarkedGame', currentGameURL);
+            isBookmarked = true;
+            alert("Game bookmarked!");
+        } else {
+            alert("Bookmark action cancelled.");
+        }
+    }
+}
+
+
+function rateGame() {
+    var rating = prompt("Enter your rating for the game (1-5):");
+    
+    // Check if a valid rating was provided
+    if (rating && !isNaN(rating) && rating >= 1 && rating <= 5) {
+        alert("Thank you for rating the game!");
+        // You would typically send this rating to the backend to store it in the database
+    } else {
+        alert("Please enter a valid rating between 1 and 5.");
+    }
+}
+
+        function changeBackgroundColor() {
+    var color = prompt("Enter a background color (e.g., #FFFFFF):");
+    if (color) {
+        document.body.style.backgroundColor = color;
+    }
+}
+
+function changeTextColor() {
+    var color = prompt("Enter a text color (e.g., #000000):");
+    if (color) {
+        document.body.style.color = color;
+    }
+}
+
+function changeFont() {
+    var font = prompt("Enter a font name (e.g., Arial):");
+    if (font) {
+        document.body.style.fontFamily = font;
+    }
+}
+
+function toggleDarkMode() {
+    // Implement dark mode toggle functionality here
+}
+
+function adjustFontSize() {
+    var size = prompt("Enter a font size (e.g., 16px):");
+    if (size) {
+        document.body.style.fontSize = size;
+    }
+}
+
+function resetSettings() {
+    // Prompt the user for confirmation
+    var confirmation = confirm("Are you sure you want to reset all settings to default values?");
+    
+    // If the user confirms the reset action
+    if (confirmation) {
+        // Reset favicon to default
+        var defaultFavicon = "default-favicon.ico";
+        document.querySelector("link[rel='shortcut icon']").setAttribute("href", defaultFavicon);
+        
+        // Reset title to default
+        var defaultTitle = "Voided Games";
+        document.title = defaultTitle;
+        
+        // For demonstration purposes, let's just display an alert indicating that settings have been reset
+        alert("Settings reset to default values!");
+    } else {
+        // If the user cancels the reset action, display a message
+        alert("Reset action cancelled.");
+    }
+}
+
+
     </script>
 </body>
 </html>
